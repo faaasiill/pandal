@@ -17,12 +17,12 @@ export function AdminLayout() {
   const title = usePageTitle()
 
   return (
-    <div className="flex min-h-screen bg-[var(--gray-50)]">
+    <div className="flex min-h-screen w-full overflow-x-hidden bg-[var(--bg-page)]">
       <AdminSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex min-h-screen flex-1 flex-col lg:pl-0">
+      <div className="flex min-h-screen w-full min-w-0 flex-1 flex-col">
         <AdminHeader title={title} onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <main className="min-w-0 flex-1 px-4 py-5 sm:px-6 sm:py-7 lg:px-10 lg:py-9">
           <div className="mx-auto w-full max-w-6xl">
             <Outlet />
           </div>

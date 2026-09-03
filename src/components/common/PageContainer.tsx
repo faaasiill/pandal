@@ -13,14 +13,14 @@ interface PageContainerProps {
  */
 export function PageContainer({ title, description, actions, children }: PageContainerProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-[22px] font-semibold tracking-tight text-[var(--gray-900)]">
+          <h2 className="text-[20px] font-semibold tracking-tight text-[var(--gray-900)] sm:text-[22px]">
             {title}
           </h2>
           {description && (
-            <p className="mt-0.5 text-[14px] tracking-tight text-[var(--gray-500)]">
+            <p className="mt-0.5 text-[13.5px] tracking-tight text-[var(--gray-500)] sm:text-[14px]">
               {description}
             </p>
           )}

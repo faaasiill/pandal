@@ -34,6 +34,20 @@
 
   --bg-page: #f2f9f4;   /* light green page background */
   --brand-bg: #48d44a;  /* light green banner fill */
+  --brand-bg-hover: #3ec240;
+  --brand-tint: #e3f9e4; /* soft brand tint for badges/highlights on white cards */
+  --brand-text: #1d7a24; /* accessible green for text on white */
+
+  /* Shared corner radii across the product — cards continue the
+     rounded language set by AuthLayout (32px outer / 28px panel). */
+  --radius-card: 28px;
+  --radius-panel: 20px;
+  --radius-chip: 14px;
+
+  /* Single soft shadow used on every elevated surface, matching the
+     depth already used on AuthLayout's card. */
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
+  --shadow-card-lg: 0 20px 50px -12px rgba(0, 0, 0, 0.12);
 }
 
 @layer base {

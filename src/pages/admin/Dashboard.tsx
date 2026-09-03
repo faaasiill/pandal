@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Briefcase, CalendarClock, ClipboardList, UserCheck, Users } from 'lucide-react'
+import { Briefcase, CalendarClock, ClipboardList, MapPin, UserCheck, Users } from 'lucide-react'
 import { PageContainer } from '../../components/common/PageContainer'
 import { StatCard } from '../../features/admin/components/StatCard'
-import { StatCardSkeleton, ListRowSkeleton } from '../../components/common/Skeleton'
+import { StatCardSkeleton, ListRowSkeleton, HeroSkeleton } from '../../components/common/Skeleton'
 import { EmptyState } from '../../components/common/EmptyState'
+import { useAuth } from '../../features/auth/store/AuthProvider'
 
 // Placeholder data only — wire this up to real queries once the
 // Work/Attendance features are built.
@@ -29,7 +30,15 @@ const MOCK_UPCOMING_WORKS: UpcomingWork[] = [
   { id: '3', name: 'Thrissur Pooram Catering', date: 'Sep 12, 7:00 AM', location: 'Thrissur', seatsFilled: 22, seatsTotal: 30 },
 ]
 
+function greetingForNow(): string {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
+}
+
 export default function Dashboard() {
+  const { user } = useAuth()
   // Simulated fetch delay so the skeleton states below are easy to see
   // in review. Replace with a real loading flag once data is wired up.
   const [isLoading, setIsLoading] = useState(true)
@@ -40,11 +49,29 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <PageContainer
-      title="Dashboard"
-      description="An overview of works, employees, and attendance."
-    >
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <PageContainer title="Dashboard" description="An overview of works, employees, and attendance.">
+      {/* Greeting hero — continues the auth pages' rounded, brand-tinted language */}
+      {isLoading ? (
+        <HeroSkeleton />
+      ) : (
+        <div className="rounded-[28px] border border-[var(--border)] bg-white p-5 sm:p-6">
+          <div className="flex items-center gap-3.5">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--brand-bg)] text-[15px] font-semibold text-white">
+              {getInitials(user?.fullName || user?.email)}
+            </span>
+            <div className="min-w-0 leading-tight">
+              <p className="text-[13px] tracking-tight text-[var(--gray-500)]">
+                {greetingForNow()}
+              </p>
+              <p className="truncate text-[17px] font-semibold tracking-tight text-[var(--gray-900)]">
+                {user?.fullName || user?.email}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-3.5 sm:gap-4 lg:grid-cols-4">
         {isLoading ? (
           <>
             <StatCardSkeleton />
@@ -86,7 +113,7 @@ export default function Dashboard() {
         )}
       </div>
 
-      <div className="rounded-2xl border border-[var(--border)] bg-white">
+      <div className="rounded-[28px] border border-[var(--border)] bg-white">
         <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
           <div className="flex items-center gap-2">
             <CalendarClock className="h-4 w-4 text-[var(--gray-400)]" />
@@ -96,7 +123,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="divide-y divide-[var(--border)] px-5">
+        <div className="divide-y divide-[var(--border)] px-3 sm:px-4">
           {isLoading ? (
             <>
               <ListRowSkeleton />
@@ -105,27 +132,47 @@ export default function Dashboard() {
             </>
           ) : MOCK_UPCOMING_WORKS.length === 0 ? (
             <div className="py-2">
-              <EmptyState title="No upcoming works" description="New events will show up here once they're created." />
+              <EmptyState
+                title="No upcoming works"
+                description="New events will show up here once they're created."
+              />
             </div>
           ) : (
             MOCK_UPCOMING_WORKS.map((work) => (
-              <div key={work.id} className="flex items-center justify-between gap-4 py-3.5">
-                <div className="min-w-0">
+              <div
+                key={work.id}
+                className="flex items-center gap-3 rounded-2xl px-1.5 py-3 transition-colors duration-150 hover:bg-[var(--gray-50)] sm:gap-4 sm:px-2"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--brand-tint)] text-[var(--brand-text)]">
+                  <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+                </span>
+                <div className="min-w-0 flex-1">
                   <p className="truncate text-[14px] font-medium tracking-tight text-[var(--gray-900)]">
                     {work.name}
                   </p>
-                  <p className="mt-0.5 text-[13px] tracking-tight text-[var(--gray-500)]">
-                    {work.date} &middot; {work.location}
+                  <p className="mt-0.5 flex items-center gap-1 truncate text-[12.5px] tracking-tight text-[var(--gray-500)]">
+                    <span>{work.date}</span>
+                    <span className="text-[var(--gray-200)]">&middot;</span>
+                    <MapPin className="h-3 w-3 shrink-0" />
+                    <span className="truncate">{work.location}</span>
                   </p>
                 </div>
                 <span className="shrink-0 rounded-full bg-[var(--gray-50)] px-2.5 py-1 text-[12.5px] font-medium tracking-tight text-[var(--gray-500)]">
-                  {work.seatsFilled}/{work.seatsTotal} seats
+                  {work.seatsFilled}/{work.seatsTotal}
                 </span>
               </div>
             ))
           )}
         </div>
+        <div className="h-3 sm:h-4" />
       </div>
     </PageContainer>
   )
+}
+
+function getInitials(name?: string): string {
+  if (!name) return '?'
+  const parts = name.trim().split(/\s+/)
+  const initials = parts.slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '')
+  return initials.join('') || '?'
 }
