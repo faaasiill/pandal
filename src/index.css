@@ -15,7 +15,13 @@
   --accent: #0071e3;
   --accent-hover: #0077ed;
   --accent-active: #0068d1;
+  --accent-bg: #eaf4ff;
   --danger: #d70015;
+  --danger-bg: #fdecec;
+  --success: #1f9254;
+  --success-bg: #e8f7ee;
+  --warning: #b45309;
+  --warning-bg: #fef3e6;
 
   font-size: 16px;
   line-height: 1.45;
